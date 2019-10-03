@@ -1,1 +1,0 @@
-[('n02099849', 'Chesapeake_Bay_retriever', 0.16922791), ('n09421951', 'sandbar', 0.096643694), ('n02099712', 'Labrador_retriever', 0.034272723)]
