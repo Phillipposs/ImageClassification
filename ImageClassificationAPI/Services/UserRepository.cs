@@ -45,5 +45,31 @@ namespace ImageClassificationAPI.Services
             return UserContext.Users
             .Where(u => u.Name == name).SingleOrDefault().Id;
         }
+
+        public int insertPhoto(Photo photo)
+        {
+            UserContext.Photos
+           .Add(photo);
+            if (UserContext.Photos
+            .Where(p => p.Name == photo.Name).FirstOrDefault() == null)
+            {
+                UserContext.SaveChanges();
+                return photo.Id;
+            }
+            else          
+                return GetPhotoId(photo.Name);
+        }
+
+        public int GetPhotoId(string name)
+        {
+            return UserContext.Photos
+            .Where(p => p.Name == name).SingleOrDefault().Id;
+        }
+
+        public Photo GetPhoto(int id)
+        {
+            return UserContext.Photos
+         .Where(p => p.Id == id).FirstOrDefault();
+        }
     }
 }

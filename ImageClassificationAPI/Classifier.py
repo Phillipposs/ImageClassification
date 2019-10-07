@@ -15,7 +15,6 @@ from PIL import Image
 import threading
 import threading as thread_locker
 import time
-import json
 # Process Model
 
 lista = sys.argv
@@ -57,12 +56,9 @@ def classifyFilesInFolder():
                 image = preprocess_input(image)
                 pred = model.predict(image, batch_size = 16)
                 content = decode_predictions(pred, top=3)[0]
-                niz = []
-                for (i, (imagenetID, label, prob)) in enumerate(content):
-                    niz.append(("{}. {}: {:.2f}%".format(i + 1, label, prob * 100)))
-                createTxtFile(reportDirFile,json.dumps(niz))
+                createTxtFile(reportDirFile,str(content))
                 os.remove(fileInDir)
-               
+                print('Predicted:',content)
         time.sleep(1)
 model._make_predict_function()
 thread1 = threading.Thread(target = classifyFilesInFolder,args = ())

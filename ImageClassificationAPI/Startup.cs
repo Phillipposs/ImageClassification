@@ -39,6 +39,7 @@ namespace ImageClassificationAPI
             services.AddDbContext<UserDbContext>(options => options.UseSqlite(connString));
             services.AddScoped<IUserService, UserService>(); 
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IPhotoService, PhotoService>();
             
         }
 

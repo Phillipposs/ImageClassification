@@ -11,7 +11,7 @@ namespace ImageClassificationAPI.Entities
         }
 
         public virtual DbSet<User> Users{ get; set; }
-
+        public virtual DbSet<Photo> Photos { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>(user => 
@@ -19,7 +19,12 @@ namespace ImageClassificationAPI.Entities
                 user.HasIndex(u => new { u.Name, u.Password, u.DeviceToken })
                .IsUnique();
             });
-
+            modelBuilder.Entity<Photo>(photo =>
+            {
+                photo.HasOne(p => p.User)
+                    .WithMany(u => u.Photos)
+                    .HasForeignKey(p => p.UserId);
+            });
         }
     }
 }
