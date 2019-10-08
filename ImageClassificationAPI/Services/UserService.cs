@@ -26,6 +26,11 @@ namespace ImageClassificationAPI.Services
            return _userRepository.GetUser(id);
         }
 
+        public User GetUserByToken(string token)
+        {
+            return _userRepository.GetUserByToken(token);
+        }
+
         public int GetUserId(string name)
         {
             return _userRepository.GetUserId(name);

@@ -49,7 +49,7 @@ namespace ImageClassificationAPI
         /// </summary>
         static void _watcher_Changed(object sender, FileSystemEventArgs e)
         {
-             CreateRequestAsync(client, e.FullPath,e.Name);
+             //CreateRequestAsync(client, e.FullPath,e.Name);
             // Can change program state (set invalid state) in this method.
             // ... Better to use insensitive compares for file names.
         }

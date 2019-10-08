@@ -3,7 +3,6 @@ using System;
 using System.IO;
 using ImageClassificationAPI.DTOs;
 using ImageClassificationAPI.Services;
-using RabbitMQ.Client;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -12,7 +11,6 @@ using ImageClassificationAPI.Models;
 using Newtonsoft.Json;
 using System.Net;
 using System.Linq;
-using System.Text;
 
 namespace ImageClassificationAPI.Controllers
 {
@@ -30,6 +28,7 @@ namespace ImageClassificationAPI.Controllers
             _photoService = photoService;
 
         }
+
         [HttpPost("/login")]
         public IActionResult Login([FromBody] UserDTO user)
         {
@@ -47,7 +46,7 @@ namespace ImageClassificationAPI.Controllers
         }
 
         [HttpPost("/sendpush")]
-        public async Task SendPush(string fullPath, string fileName)
+        public async Task<IActionResult> SendPush(string fullPath, string fileName)
 
         {
 
@@ -58,8 +57,26 @@ namespace ImageClassificationAPI.Controllers
             string userDeviceToken = user.DeviceToken;
             string content =System.IO.File.ReadLines(fullPath).First();
             SendPushNotificationFirebase(content, userDeviceToken);
+            return Ok();
         }
 
+        [HttpGet("/getresult")]
+        public async Task<IActionResult> GetResult([FromQuery(Name = "userName")]string userName)
+        {
+          int userId = _userService.GetUserId(userName);
+          User user = _userService.GetUser(userId);
+            string photoName = _photoService.GetLastPhotoFromUser(user.Id).Name;
+            int id = _photoService.GetPhotoId(photoName);
+            Photo photo = _photoService.GetPhoto(id);
+            string photoPath = _environment.WebRootPath+"\\uploads\\reports\\" + photoName+".txt";
+            string[] lines= { "", "" };
+            if (System.IO.File.Exists(photoPath))
+            {
+                lines = System.IO.File.ReadAllLines(photoPath);
+            }
+            return Ok(lines[0]);
+
+        }
         [HttpPost("/league/sendimage")]
         public async Task Post(IFormFile file, string userName)
 

@@ -71,5 +71,23 @@ namespace ImageClassificationAPI.Services
             return UserContext.Photos
          .Where(p => p.Id == id).FirstOrDefault();
         }
+
+        public User GetUserByToken(string token)
+        {
+            return UserContext.Users
+            .Where(u => u.DeviceToken == token).SingleOrDefault();
+        }
+
+        public Photo GetFirstPhotoFromUser(int userId)
+        {
+            return UserContext.Photos
+            .Where(p => p.UserId == userId).FirstOrDefault();
+        }
+
+        public Photo GetLastPhotoFromUser(int userId)
+        {
+            return UserContext.Photos
+  .Where(p => p.UserId == userId).LastOrDefault();
+        }
     }
 }

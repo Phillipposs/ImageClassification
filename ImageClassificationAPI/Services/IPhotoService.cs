@@ -11,5 +11,7 @@ namespace ImageClassificationAPI.Services
          int GetPhotoId(string name);
          int InsertPhoto(Photo photo);
          Photo GetPhoto(int id);
+         Photo GetFirstPhotoFromUser(int userId);
+         Photo GetLastPhotoFromUser(int userId);
     }
 }

@@ -14,6 +14,16 @@ namespace ImageClassificationAPI.Services
             _userRepository = userRepository;
         }
 
+        public Photo GetFirstPhotoFromUser(int userId)
+        {
+            return _userRepository.GetFirstPhotoFromUser(userId);
+        }
+
+        public Photo GetLastPhotoFromUser(int userId)
+        {
+            return _userRepository.GetLastPhotoFromUser(userId);
+        }
+
         public Photo GetPhoto(int id)
         {
             return _userRepository.GetPhoto(id);

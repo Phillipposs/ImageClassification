@@ -34,7 +34,11 @@ namespace ImageClassificationAPI
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+           services.AddMvc().AddRazorPagesOptions(options =>
+            {
+                options.Conventions.AddPageRoute("/Home/Index", "");
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
             var connString = Configuration.GetConnectionString("UserDb");
             services.AddDbContext<UserDbContext>(options => options.UseSqlite(connString));
             services.AddScoped<IUserService, UserService>(); 
@@ -58,8 +62,13 @@ namespace ImageClassificationAPI
             }
             app.UseStatusCodePages();
             app.UseStaticFiles();
-
             app.UseMvc();
+            //app.UseMvc(routes =>
+            //{
+            //    routes.MapRoute(
+            //        name: "default",
+            //        template: "{controller=Home}/{action=Index}/{id?}");
+            //});
 
             context.Database.Migrate();
         }

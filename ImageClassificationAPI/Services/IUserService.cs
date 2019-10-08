@@ -12,5 +12,6 @@ namespace ImageClassificationAPI.Services
         User GetUser(int id);
         int CreateUser(UserDTO user);
         int GetUserId(string name);
+        User GetUserByToken(string token);
     }
 }
