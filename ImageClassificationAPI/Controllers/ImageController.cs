@@ -46,21 +46,6 @@ namespace ImageClassificationAPI.Controllers
             return Ok();
         }
 
-        [HttpPost("/sendpush")]
-        public async Task<IActionResult> SendPush(string fullPath, string fileName)
-
-        {
-
-            string name = fileName.Replace(".txt", "");
-            int id = _photoService.GetPhotoId(name);
-            Photo photo = _photoService.GetPhoto(id);
-            User user = _userService.GetUser(photo.UserId);
-            string userDeviceToken = user.DeviceToken;
-            string content =System.IO.File.ReadLines(fullPath).First();
-            SendPushNotificationFirebase(content, userDeviceToken);
-            return Ok();
-        }
-
         [HttpGet("/getresult")]
         public async Task<IActionResult> GetResult([FromQuery(Name = "userName")]string userName)
         {
@@ -149,96 +134,7 @@ namespace ImageClassificationAPI.Controllers
            
 
         }
-        public static void SendPushNotificationFirebase(string result, string deviceToken)
-        {
-            WebRequest tRequest = WebRequest.Create("https://fcm.googleapis.com/fcm/send");
-            tRequest.Method = "post";
-            //serverKey - Key from Firebase cloud messaging server  
-            tRequest.Headers.Add(string.Format("Authorization: key={0}", "AAAAoKD6ujk:APA91bGIlMTNyheEmDUgHedRTdunwBwO3gznSsBAZlHVozl7c47pK_JjHXlM_QJ7YDPDAh-C68LzZysEhtHFf8Hfy2gzoJVOytLvhR687vmT5_kEiwoR_AcvhoWrWYNQrkDW-vPmYshU"));
-            //Sender Id - From firebase project setting  
-            tRequest.Headers.Add(string.Format("Sender: id={0}", "689895553593"));
-            tRequest.ContentType = "application/json";
-            var payload = new
-            {
-                to = deviceToken, //"cY3S4j3pirY:APA91bG80jjo7x_Q-VO3V8hPxWJAiZoKsMH2AyIMVNluczcPDmvKOUUhteEMiidAtDKUgxOQGeP-cQA5LWj50tMjJbMJiRD9IV8iZo78ndmU4yIo-pwrZDwRraw-Cz6zpHLxDMNQzQHz",
-                priority = "high",
-                content_available = true,
-                data = new
-                {
-                    result = result,
-                    title = "Test",
-                    badge = 1,
-                    silent = true
-                },
-            };
-
-            string postbody = JsonConvert.SerializeObject(payload).ToString();
-            Byte[] byteArray = Encoding.UTF8.GetBytes(postbody);
-            tRequest.ContentLength = byteArray.Length;
-            using (Stream dataStream = tRequest.GetRequestStream())
-            {
-                dataStream.Write(byteArray, 0, byteArray.Length);
-                using (WebResponse tResponse = tRequest.GetResponse())
-                {
-                    using (Stream dataStreamResponse = tResponse.GetResponseStream())
-                    {
-                        if (dataStreamResponse != null) using (StreamReader tReader = new StreamReader(dataStreamResponse))
-                            {
-                                String sResponseFromServer = tReader.ReadToEnd();
-                                Console.WriteLine("Sent push notification !!!", result);
-                                //result.Response = sResponseFromServer;
-                            }
-                    }
-                }
-            }
-        }
-
-        //[HttpGet("/league/getallleagues")]
-        //public void GetAllLeagues()
-        //{
-
-        //    var factory = new ConnectionFactory() { HostName = "localhost" };
-        //    using (var connection = factory.CreateConnection())
-        //    using (var channel = connection.CreateModel())
-        //    {
-        //        channel.QueueDeclare(queue: "msgKey",
-        //                             durable: false,
-        //                             exclusive: false,
-        //                             autoDelete: false,
-        //                             arguments: null);
-
-        //        var msg = "dog.42.jpg";
-        //        var body = Encoding.UTF8.GetBytes(msg);
-        //        channel.BasicPublish(exchange: "",
-        //                             routingKey: "msgKey",
-        //                             basicProperties: null,
-        //                             body: body);
-        //    }
-
-
-        //    Console.ReadLine();
-        //}
-
-        //private void SendToRabbitMQ(string argument)
-        //{
-        //    var factory = new ConnectionFactory() { HostName = "localhost" };
-        //    using (var connection = factory.CreateConnection())
-        //    using (var channel = connection.CreateModel())
-        //    {
-        //        channel.QueueDeclare(queue: "msgKey",
-        //                             durable: false,
-        //                             exclusive: false,
-        //                             autoDelete: false,
-        //                             arguments: null);
-
-        //        var msg = argument;
-        //        var body = Encoding.UTF8.GetBytes(msg);
-        //        channel.BasicPublish(exchange: "",
-        //                             routingKey: "msgKey",
-        //                             basicProperties: null,
-        //                             body: body);
-        //    }
-        //}
+      
 
 
     }
