@@ -43,7 +43,7 @@ namespace ImageClassificationAPI.Services
         public int GetUserId(string name)
         {
             return UserContext.Users
-            .Where(u => u.Name == name).SingleOrDefault().Id;
+            .Where(u => u.Name == name).FirstOrDefault().Id;
         }
 
         public int insertPhoto(Photo photo)
@@ -63,7 +63,7 @@ namespace ImageClassificationAPI.Services
         public int GetPhotoId(string name)
         {
             return UserContext.Photos
-            .Where(p => p.Name == name).SingleOrDefault().Id;
+            .Where(p => p.Name == name).FirstOrDefault().Id;
         }
 
         public Photo GetPhoto(int id)
@@ -71,11 +71,15 @@ namespace ImageClassificationAPI.Services
             return UserContext.Photos
          .Where(p => p.Id == id).FirstOrDefault();
         }
-
+        public List<Photo> GetUserPhotos(int userId)
+        {
+            return UserContext.Photos
+         .Where(p => p.UserId == userId).ToList<Photo>();
+        }
         public User GetUserByToken(string token)
         {
             return UserContext.Users
-            .Where(u => u.DeviceToken == token).SingleOrDefault();
+            .Where(u => u.DeviceToken == token).FirstOrDefault();
         }
 
         public Photo GetFirstPhotoFromUser(int userId)

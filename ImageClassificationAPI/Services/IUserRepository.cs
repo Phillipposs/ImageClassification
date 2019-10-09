@@ -18,5 +18,6 @@ namespace ImageClassificationAPI.Services
         Photo GetPhoto(int id);
         Photo GetFirstPhotoFromUser(int userId);
         Photo GetLastPhotoFromUser(int userId);
+        List<Photo> GetUserPhotos(int userId);
     }
 }

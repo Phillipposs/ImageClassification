@@ -11,11 +11,12 @@ using ImageClassificationAPI.Models;
 using Newtonsoft.Json;
 using System.Net;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace ImageClassificationAPI.Controllers
 {
     [Produces("application/json")]
-    [Route("api/league")]
+    [Route("api/")]
     public class ImageController : Controller
     {
         private readonly IHostingEnvironment _environment;
@@ -63,22 +64,32 @@ namespace ImageClassificationAPI.Controllers
         [HttpGet("/getresult")]
         public async Task<IActionResult> GetResult([FromQuery(Name = "userName")]string userName)
         {
-          int userId = _userService.GetUserId(userName);
+
+            string resultString = "";
+            int userId = _userService.GetUserId(userName);
           User user = _userService.GetUser(userId);
-            string photoName = _photoService.GetLastPhotoFromUser(user.Id).Name;
-            int id = _photoService.GetPhotoId(photoName);
-            Photo photo = _photoService.GetPhoto(id);
-            string photoPath = _environment.WebRootPath+"\\uploads\\reports\\" + photoName+".txt";
-            string[] lines= { "", "" };
-            if (System.IO.File.Exists(photoPath))
+            List<Photo> userPhotos = _photoService.GetUserPhotos(userId);
+            foreach(Photo p in userPhotos)
             {
-                lines = System.IO.File.ReadAllLines(photoPath);
+                string photoPath;
+                string[] lines = { "", "" };
+                photoPath = _environment.WebRootPath + "\\uploads\\reports\\" + p.Name + ".txt";
+                
+                if (System.IO.File.Exists(photoPath))
+                {
+                    lines = System.IO.File.ReadAllLines(photoPath);
+                }
+                resultString = resultString +"`"+ lines[0];
             }
-            return Ok(lines[0]);
+            //string photoName = _photoService.GetLastPhotoFromUser(user.Id).Name;
+            //int id = _photoService.GetPhotoId(photoName);
+            //Photo photo = _photoService.GetPhoto(id);
+
+            return Ok(resultString);
 
         }
-        [HttpPost("/league/sendimage")]
-        public async Task Post(IFormFile file, string userName)
+        [HttpPost("/sendimage")]
+        public async Task SendImage(IFormFile file, string userName)
 
         {
 
@@ -104,6 +115,38 @@ namespace ImageClassificationAPI.Controllers
                 }
 
             }
+
+        }
+        [HttpPost("/sendimages")]
+        public async Task SendImages(List<IFormFile> files, string userName)
+
+        {
+            foreach (IFormFile file in files)
+            {
+                var uploads = Path.Combine(_environment.WebRootPath, "uploads");
+                int id = _userService.GetUserId(userName);
+                User user = _userService.GetUser(id);
+                _photoService.InsertPhoto(new Photo
+                {
+                    Name = file.FileName,
+                    UserId = user.Id
+                });
+                if (file.Length > 0)
+                {
+                    string path = Path.Combine(uploads, file.FileName);
+                    using (var fileStream = new FileStream(path, FileMode.Create))
+
+                    {
+
+                        await file.CopyToAsync(fileStream);
+
+                        // SendToRabbitMQ(path+"`"+user.DeviceToken);
+
+                    }
+
+                }
+            }
+           
 
         }
         public static void SendPushNotificationFirebase(string result, string deviceToken)

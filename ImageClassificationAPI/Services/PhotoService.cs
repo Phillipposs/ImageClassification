@@ -34,6 +34,11 @@ namespace ImageClassificationAPI.Services
             return _userRepository.GetPhotoId(name);
         }
 
+        public List<Photo> GetUserPhotos(int userId)
+        {
+            return _userRepository.GetUserPhotos(userId);
+        }
+
         public int InsertPhoto(Photo photo)
         {
             return _userRepository.insertPhoto(photo);

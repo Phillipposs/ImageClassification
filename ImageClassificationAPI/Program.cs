@@ -59,7 +59,7 @@ namespace ImageClassificationAPI
         {
 
 
-            Task.Run(() => Init());
+           // Task.Run(() => Init());
 
             CreateWebHostBuilder(args).Build().Run();
 

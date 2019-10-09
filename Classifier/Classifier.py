@@ -60,6 +60,8 @@ def classifyFilesInFolder():
                 niz = []
                 for (i, (imagenetID, label, prob)) in enumerate(content):
                     niz.append(("{}. {}: {:.2f}%".format(i + 1, label, prob * 100)))
+                    
+                niz.append(str(filename))
                 createTxtFile(reportDirFile,json.dumps(niz))
                 os.remove(fileInDir)
                
