@@ -50,14 +50,11 @@ namespace ImageClassificationAPI.Services
         {
             UserContext.Photos
            .Add(photo);
-            if (UserContext.Photos
-            .Where(p => p.Name == photo.Name).FirstOrDefault() == null)
-            {
-                UserContext.SaveChanges();
-                return photo.Id;
-            }
-            else          
-                return GetPhotoId(photo.Name);
+          
+               UserContext.SaveChanges();
+               return photo.Id;
+            
+            
         }
 
         public int GetPhotoId(string name)
